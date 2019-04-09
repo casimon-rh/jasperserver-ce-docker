@@ -13,7 +13,9 @@ if [ ! -z "$DATABASE_TYPE" ] && [ ! -z "$DATABASE_HOST" ] && [ ! -z "$DATABASE_U
     fi
     sed -i -e "s/^dbHost=localhost/dbHost=$DATABASE_HOST/" \
     -e "s/^dbUsername=postgres/dbUsername=$DATABASE_USER/" \
+    -e "s/^dbUsername=root/dbUsername=$DATABASE_USER/" \
     -e "s/^dbPassword=postgres/dbPassword=$DATABASE_PASS/" \
+    -e "s/^dbPassword=password/dbPassword=$DATABASE_PASS/" \
     ./buildomatic/default_master.properties
 
     cd buildomatic
@@ -23,10 +25,11 @@ if [ ! -z "$DATABASE_TYPE" ] && [ ! -z "$DATABASE_HOST" ] && [ ! -z "$DATABASE_U
         echo "y" | ./js-install-ce.sh minimal
     fi
     cd ..
-    catalina.sh start
     rm -f /usr/local/tomcat/webapps/jasperserver/WEB-INF/applicationContext-diagnostic.xml
     sed -i -e "s/^org.owasp.csrfguard.Enabled = true/org.owasp.csrfguard.Enabled = false/" /usr/local/tomcat/webapps/jasperserver/WEB-INF/csrf/jrs.csrfguard.js
+    catalina.sh start
 else
+    echo "no hay entorno"
     docker_stop
 fi
 
